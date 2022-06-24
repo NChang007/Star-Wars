@@ -1,26 +1,35 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
-import rigoImageUrl from "../../img/rigo-baby.jpg";
 import "../../styles/home.css";
+import CharacterCard from "../component/CharacterCard";
 
 export const Home = () => {
-	const { store, actions } = useContext(Context);
+	const [characters, setCharacters] = React.useState([])
+
+    React.useEffect(() =>{
+        fetch('https://swapi.dev/api/people/')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            setCharacters(data.results)
+        })
+        .catch(error => {
+			//error handling
+			console.log(error);
+		});
+    },[])
 
 	return (
-		<div className="text-center mt-5">
-			<h1>Hello Rigo!!</h1>
-			<p>
-				<img src={rigoImageUrl} />
-			</p>
-			<div className="alert alert-info">
-				{store.message || "Loading message from the backend (make sure your python backend is running)..."}
-			</div>
-			<p>
-				This boilerplate comes with lots of documentation:{" "}
-				<a href="https://github.com/4GeeksAcademy/react-flask-hello/tree/95e0540bd1422249c3004f149825285118594325/docs">
-					Read documentation
-				</a>
-			</p>
+		<div className="row" style={{padding:'3rem', display:'flex', justifyContent:'center', alignItems:'center'}}>
+			
+				{characters.map((char, key) => {
+					return(
+						<div className="col-3">
+							<CharacterCard character={char} key={key}/>
+						</div>
+					)
+				})}
+			
 		</div>
 	);
 };
