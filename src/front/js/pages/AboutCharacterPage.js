@@ -1,13 +1,16 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { Context } from "../store/appContext";
 import home from "../pages/home";
 
-function AboutCharacterPage() {
-    const location = useLocation()
-    const {title} = location.state
+function AboutCharacterPage({char, key}) {
+  const { store, actions } = React.useContext(Context);
+  const params = useParams();
+  let c = actions.getCharacter(parseInt(params.key))
+
   return (
     <div className="ACP-page">
-      <h1>{title}</h1>
+      <h1>{c.name}</h1>
       <div className="ACP-container">
         <img
           className=""
