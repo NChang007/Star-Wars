@@ -22,9 +22,9 @@ function CharacterCard({character, c_id}) {
             <span className="btn btn-primary">Learn More</span>
 					</Link>
           <i 
-          className="far fa-lg fa-heart" 
-          style={{margin:'0rem 0rem 0rem 5rem'}}
-          onClick={() => actions.handleFavorites(c_id)}
+          className="far fa-lg fa-heart favBtn" 
+          style={{margin:'0rem 0rem 0rem 7rem'}}
+          onClick={() => actions.handleFavorites(c_id, "char")}
           ></i>
         </div>
         

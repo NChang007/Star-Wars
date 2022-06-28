@@ -74,11 +74,11 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       // favorites-----------------------------------------------------------------------------------
-      handleFavorites: (idx) => {
+      handleFavorites: (idx, type) => {
         let store = getStore();
-        if(store.characters[idx].type == 'char'){
+        if(type == 'char'){
           store.characters[idx].fav = !store.characters[idx].fav; 
-        }else if(store.characters[idx].type == 'planet'){
+        }else {
           store.planets[idx].fav = !store.planets[idx].fav;
         }
         

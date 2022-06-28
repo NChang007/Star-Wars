@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
+import AboutCharacterPage from '../pages/AboutCharacterPage'
 import { Link } from "react-router-dom";
-
+import { Context } from "../store/appContext";
 function PlanetsCard({planet, p_id}) {
-    console.log(planet.name)
+    const { store, actions } = useContext(Context);
+    // console.log(planet.name)
   return (
     <div className="card" style={{ width: "18rem", margin: "1rem 3rem" }}>
       <img
@@ -24,8 +26,9 @@ function PlanetsCard({planet, p_id}) {
           <span className="btn btn-primary">Learn More</span>
         </Link>
         <i
-          className="far fa-lg fa-heart"
-          style={{ margin: "0rem 0rem 0rem 5rem" }}
+          className="far fa-lg fa-heart favBtn" 
+          style={{margin:'0rem 0rem 0rem 7rem'}}
+          onClick={() => actions.handleFavorites(p_id, 'planet')}
         ></i>
       </div>
     </div>
