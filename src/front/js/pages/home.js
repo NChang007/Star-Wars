@@ -27,7 +27,7 @@ export const Home = () => {
         );
       })}
       
-      <h2>PLANETS</h2>
+      <h2 className="planetsHeading">PLANETS</h2>
       {store.planets.map((planet, idx) => {
           return (
             <div className="col-3" key={idx}>

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function PlanetsCard(planet, p_id) {
+function PlanetsCard({planet, p_id}) {
     console.log(planet.name)
   return (
     <div className="card" style={{ width: "18rem", margin: "1rem 3rem" }}>
@@ -14,9 +14,9 @@ function PlanetsCard(planet, p_id) {
       <div className="card-body">
         <h5 className="card-title">{planet.name}</h5>
         <ul className="card-text">
-          <li>{planet.rbital_period}</li>
-          <li>{planet.population}</li>
-          <li>{planet.terrain}</li>
+          <li>{planet.rotation_period}</li>
+          <li>{planet.orbital_period}</li>
+          <li>{planet.climate}</li>
         </ul>
       </div>
       <div style={{ margin: "1em" }}>
