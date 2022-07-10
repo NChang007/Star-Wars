@@ -71,6 +71,16 @@ class Favorites(db.Model):
     item_type = db.Column(db.String(256))
     name = db.Column(db.String(256))
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "fave_id": self.fave_id,
+            "item_type": self.item_type,
+            "name": self.name
+            # do not serialize the password, its a security breach
+        }
+
 class Characters(db.Model):
     __tablename__ = 'Characters'
     id = db.Column(db.Integer, primary_key=True, unique = True)
