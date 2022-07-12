@@ -1,6 +1,7 @@
 const getState = ({ getStore, getActions, setStore }) => {
   return {
     store: {
+      token: null,
       message: null,
       demo: [
         {
@@ -19,6 +20,36 @@ const getState = ({ getStore, getActions, setStore }) => {
       favorites: [],
     },
     actions: {
+
+      // login---------------------------------------------------------------------------------------------------
+      login: async(email, password) => {
+        const opts = {
+          method: 'POST',
+          headers:{
+              "content-Type":"application/json"
+          },
+          body: JSON.stringify({
+              "email": email,
+              "password": password
+          })
+        }
+        try{
+          const resp = await fetch('https://3001-nchang007-starwarsblogr-nstabynatpx.ws-us53.gitpod.io/api/token', opts)
+          if(resp.status !== 200){
+            alert('there has been an error')
+            return false
+          }
+          const data = await resp.json();
+          console.error("there were errors here")
+          sessionStorage.setItem('token', data.access_token)
+          setStore({token: data.access_token})
+          return true;
+        }
+        catch(error){
+          console.error("there was an error")
+        }
+    
+      },
       // characters------------------------------------------------------------------------------
       loadChars: () => {
         let fav = "false";
