@@ -62,6 +62,7 @@ class Users(db.Model):
     email = db.Column(db.String(256))
     user_name = db.Column(db.String(256))
     password = db.Column(db.String(256))
+    favorites = db.Column(db.ARRAY(String(256)))
 
 class Favorites(db.Model):
     __tablename__ = 'Favorites'
@@ -98,6 +99,14 @@ class Characters(db.Model):
         return {
             "id": self.id,
             "name": self.name,
+            "birth_year": self.birth_year,
+            "eye_color": self.eye_color,
+            "gender": self.gender,
+            "hair_color": self.hair_color,
+            "height": self.height,
+            "mass": self.mass,
+            "skin_color": self.skin_color,
+            "homeworld": self.homeworld,
             # do not serialize the password, its a security breach
         }
     

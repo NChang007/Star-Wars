@@ -49,11 +49,18 @@ export const Navbar = ({ character, c_id, planets, p_id }) => {
           </div>
         </div>
         <div className="ml-auto">
-          <Link to="/demo">
-            <button className="btn btn-primary">
-              Check the Context in action
-            </button>
-          </Link>
+          { !store.token ?
+            <Link to="/login">
+              <button className="btn btn-primary">
+                Log In
+              </button>
+            </Link> 
+            :
+            <button onClick={() => actions.logout()} className="btn btn-primary">
+                Log Out
+              </button>
+            
+          }
         </div>
       </div>
     </nav>

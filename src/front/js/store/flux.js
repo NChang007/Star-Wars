@@ -20,52 +20,72 @@ const getState = ({ getStore, getActions, setStore }) => {
       favorites: [],
     },
     actions: {
+      syncTokenFromSessionStore: () => {
+        const token = sessionStorage.getItem("token");
+        if (token && token != "" && token != undefined)
+          setStore({ token: token });
+      },
+
+      logout: () => {
+        const token = sessionStorage.removeItem("token");
+          setStore({ token: null });
+      },
 
       // login---------------------------------------------------------------------------------------------------
-      login: async(email, password) => {
+      login: async (email, password) => {
         const opts = {
-          method: 'POST',
-          headers:{
-              "content-Type":"application/json"
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            //"Access-Control-Allow-Headers": "Origin",
+            //"X-Requested-With, Content-Type": "Accept",
           },
           body: JSON.stringify({
-              "email": email,
-              "password": password
-          })
-        }
-        try{
-          const resp = await fetch('https://3001-nchang007-starwarsblogr-nstabynatpx.ws-us53.gitpod.io/api/token', opts)
-          if(resp.status !== 200){
-            alert('there has been an error')
-            return false
+            email: email,
+            password: password,
+          }),
+        };
+        try {
+          const resp = await fetch(
+            "https://3001-nchang007-starwarsblogr-nstabynatpx.ws-us54.gitpod.io/api/token",
+            opts
+          );
+          if (resp.status !== 200) {
+            alert("there has been an error");
+            return false;
           }
           const data = await resp.json();
-          console.error("there were errors here")
-          sessionStorage.setItem('token', data.access_token)
-          setStore({token: data.access_token})
+          sessionStorage.setItem("token", data.access_token);
+          setStore({ token: data.access_token });
           return true;
+        } catch (error) {
+          console.error("there was an error", error);
         }
-        catch(error){
-          console.error("there was an error")
-        }
-    
       },
       // characters------------------------------------------------------------------------------
       loadChars: () => {
         let fav = "false";
         //get the store
         const store = getStore();
+        const opts = {
+          headers: {
+            "Authorization":"Bearer "+ store.token
+          }
+        }
         //fetch
-        fetch("https://swapi.dev/api/people/")
+        fetch("https://3001-nchang007-starwarsblogr-nstabynatpx.ws-us54.gitpod.io/api/characters")
           .then((response) => response.json())
           .then((data) => {
-            for (let i = 0; i < data.results.length; i++) {
-              data.results[i].fav = false;
-              data.results[i].type = 'char'
+            console.log(data);
+            for (let i = 0; i < data.data.length; i++) {
+              data.data[i].fav = false;
+              data.data[i].type = "char";
             }
             // store.planets = data.results;
             // setStore(store);
-            setStore({ characters: data.results });
+            setStore({ characters: data.data });
           })
           .catch((error) => {
             //error handling
@@ -88,7 +108,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           .then((data) => {
             for (let i = 0; i < data.results.length; i++) {
               data.results[i].fav = false;
-              data.results[i].type = 'planet'
+              data.results[i].type = "planet";
             }
             console.log(data);
             setStore({ planets: data.results });
@@ -107,19 +127,20 @@ const getState = ({ getStore, getActions, setStore }) => {
       // favorites-----------------------------------------------------------------------------------
       handleFavorites: (idx, type) => {
         let store = getStore();
-        if(type == 'char'){
-          store.characters[idx].fav = !store.characters[idx].fav; 
-        }else {
+        const opts = {
+          headers: {
+            "Authorization":"Bearer "+ store.token
+          }
+        }  
+        if (type == "char") {
+          store.characters[idx].fav = !store.characters[idx].fav;
+        } else {
           store.planets[idx].fav = !store.planets[idx].fav;
         }
-        
-        
-        setStore({ characters: store.characters, planets: store.planets});
+
+        setStore({ characters: store.characters, planets: store.planets });
         console.log(store.characters);
       },
-
-
-
 
       // Use getActions to call a function within a fuction
       exampleFunction: () => {
@@ -127,6 +148,12 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       getMessage: async () => {
+        const store = getStore()
+        const opts = {
+          headers: {
+            "Authorization":"Bearer "+ store.token
+          }
+        }
         try {
           // fetching data from the backend
           const resp = await fetch(process.env.BACKEND_URL + "/api/hello");

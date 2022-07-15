@@ -3,22 +3,23 @@ import { Context } from "../store/appContext";
 import "../../styles/home.css";
 import CharacterCard from "../component/CharacterCard";
 import PlanetsCard from "../component/PlanetsCard";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
   //const [characters, setCharacters] = React.useState([])
   const { store, actions } = useContext(Context);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const token = sessionStorage.getItem("token");
-    const history =useHistory();
+  const history = useNavigate();
 
+  const token = sessionStorage.getItem("token");
+  console.log(token);
     const handleClick = () => {
-        actions.login(email, password).then(() =>{
-            history.push("/")
-        })
+        actions.login(email, password)
     }
 
+    if (store.token && store.token != "" && store.token != undefined) history("/")
+    
   return (
     <div className="text-center mt-5">
         <h1>Login</h1>
