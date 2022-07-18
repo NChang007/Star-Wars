@@ -24,7 +24,7 @@ function CharacterCard({character, c_id}) {
           <i 
           className="far fa-lg fa-heart favBtn" 
           style={{margin:'0rem 0rem 0rem 7rem'}}
-          onClick={() => actions.handleFavorites(c_id, "char")}
+          onClick={() => actions.handleFavorites(c_id, "char", character.name)}
           ></i>
         </div>
         

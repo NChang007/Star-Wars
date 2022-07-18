@@ -30,6 +30,7 @@ const injectContext = PassedComponent => {
 			 **/
 			state.actions.loadChars(); // <---- calling this function from the flux.js actions
 			state.actions.loadPlanets();
+			state.actions.loadFavorites();
 			state.actions.syncTokenFromSessionStore()
 		}, []);
 

@@ -7,7 +7,7 @@ import PlanetsCard from "./PlanetsCard";
 
 export const Navbar = ({ character, c_id, planets, p_id }) => {
   const { store, actions } = useContext(Context);
-
+  console.log(store);
   return (
     <nav className="navbar navbar-light bg-light">
       <div className="container">
@@ -30,21 +30,21 @@ export const Navbar = ({ character, c_id, planets, p_id }) => {
 
           <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
             
-            {store.characters.map((char, idx) => {
-              return (char.fav &&
+            {store.favorites.map((fav, idx) => {
+              return (
                 <div className="col-3 dropdown-item" key={idx}>
-                  <Favorites favorite={char} f_id={idx} />
+                  <Favorites favorite={fav} f_id={fav.fave_id} />
                 </div>
               );
             })}
             
-            {store.planets.map((planet, idx) => {
+            {/* {store.planets.map((planet, idx) => {
               return (planet.fav &&
                 <div className="col-3 dropdown-item" key={idx}>
                   <Favorites favorite={planet} f_id={idx} />
                 </div>
               );
-            })}
+            })} */}
             
           </div>
         </div>

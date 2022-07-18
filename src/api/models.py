@@ -59,10 +59,19 @@ class Users(db.Model):
     __tablename__ ='Users'
     id = db.Column(db.Integer, primary_key = True, unique = True)
     name = db.Column(db.String(256))
-    email = db.Column(db.String(256))
+    email = db.Column(db.String(256), unique = True)
     user_name = db.Column(db.String(256))
     password = db.Column(db.String(256))
-    favorites = db.Column(db.ARRAY(String(256)))
+    #favorites = db.Column(db.String(256))
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "user_name": self.user_name,
+            #"favorites": self.favorites
+            # do not serialize the password, its a security breach
+        }
 
 class Favorites(db.Model):
     __tablename__ = 'Favorites'

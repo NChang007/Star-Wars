@@ -31,6 +31,7 @@ export const Login = () => {
                 <button onClick={handleClick}>Login</button>
             </div>
         }
+        {store.message && <p>{store.message}</p>}
     </div>
   );
 };

@@ -28,7 +28,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
       logout: () => {
         const token = sessionStorage.removeItem("token");
-          setStore({ token: null });
+        setStore({ token: null });
       },
 
       // login---------------------------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         };
         try {
           const resp = await fetch(
-            "https://3001-nchang007-starwarsblogr-nstabynatpx.ws-us54.gitpod.io/api/token",
+            "https://3001-nchang007-starwarsblogr-nstabynatpx.ws-us54.gitpod.io/api/login",
             opts
           );
           if (resp.status !== 200) {
@@ -57,8 +57,14 @@ const getState = ({ getStore, getActions, setStore }) => {
             return false;
           }
           const data = await resp.json();
-          sessionStorage.setItem("token", data.access_token);
-          setStore({ token: data.access_token });
+          console.log(data);
+          if (data.msg) {
+            setStore({ message: data.msg });
+          } else {
+            sessionStorage.setItem("token", data.access_token);
+            setStore({ token: data.access_token, favorites: data.favorites });
+          }
+
           return true;
         } catch (error) {
           console.error("there was an error", error);
@@ -66,21 +72,23 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
       // characters------------------------------------------------------------------------------
       loadChars: () => {
-        let fav = "false";
+        // let fav = "false";
         //get the store
         const store = getStore();
-        const opts = {
-          headers: {
-            "Authorization":"Bearer "+ store.token
-          }
-        }
+        // const opts = {
+        //   headers: {
+        //     "Authorization":"Bearer "+ store.token
+        //   }
+        // }
         //fetch
-        fetch("https://3001-nchang007-starwarsblogr-nstabynatpx.ws-us54.gitpod.io/api/characters")
+        fetch(
+          "https://3001-nchang007-starwarsblogr-nstabynatpx.ws-us54.gitpod.io/api/characters"
+        )
           .then((response) => response.json())
           .then((data) => {
             console.log(data);
             for (let i = 0; i < data.data.length; i++) {
-              data.data[i].fav = false;
+              // data.data[i].fav = false;
               data.data[i].type = "char";
             }
             // store.planets = data.results;
@@ -91,6 +99,29 @@ const getState = ({ getStore, getActions, setStore }) => {
             //error handling
             console.log(error);
           });
+      },
+
+      loadFavorites: () => {
+        const store = getStore();
+        if (sessionStorage.getItem("token")) {
+          const opts = {
+            headers: {
+              Authorization: "Bearer " + store.token,
+            },
+          };
+          fetch(
+            "https://3001-nchang007-starwarsblogr-nstabynatpx.ws-us54.gitpod.io/api/favorites",
+            opts
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              setStore({ favorites: data.favorites });
+            })
+            .catch((error) => {
+              //error handling
+              console.log(error);
+            });
+        }
       },
 
       getCharacter: (idx) => {
@@ -125,21 +156,68 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       // favorites-----------------------------------------------------------------------------------
-      handleFavorites: (idx, type) => {
+      handleFavorites: (idx, type, name) => {
         let store = getStore();
-        const opts = {
-          headers: {
-            "Authorization":"Bearer "+ store.token
-          }
-        }  
-        if (type == "char") {
-          store.characters[idx].fav = !store.characters[idx].fav;
-        } else {
-          store.planets[idx].fav = !store.planets[idx].fav;
-        }
 
-        setStore({ characters: store.characters, planets: store.planets });
-        console.log(store.characters);
+        // if favorite exists - delete
+        if (store.favorites.filter((f) => f.fave_id == idx).length > 0) {
+          const opts = {
+            method: "DELETE",
+            headers: {
+              Authorization: "Bearer " + store.token,
+            },
+          };
+          let f = store.favorites.filter((f) => f.fave_id == idx);
+          fetch(
+            "https://3001-nchang007-starwarsblogr-nstabynatpx.ws-us54.gitpod.io/api/deletefav/" +
+              f[0].id,
+            opts
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              setStore({ favorites: data.favorites });
+            })
+            .catch((error) => {
+              //error handling
+              console.log(error);
+            });
+        } else {
+          const opts = {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + store.token,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              "fave_id": idx,
+              "item_type": type,
+              "name": name,
+            }),
+          };
+          //add the new one
+          fetch(
+            "https://3001-nchang007-starwarsblogr-nstabynatpx.ws-us54.gitpod.io/api/addfavorites",
+            opts
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              setStore({ favorites: data.favorites });
+            })
+            .catch((error) => {
+              //error handling
+              console.log(error);
+            });
+        }
+        // filter favorites to remove the id one
+
+        // if (type == "char") {
+        //   store.characters[idx].fav = !store.characters[idx].fav;
+        // } else {
+        //   store.planets[idx].fav = !store.planets[idx].fav;
+        // }
+
+        //setStore({ favorites: favorites });
+        //console.log(store.characters);
       },
 
       // Use getActions to call a function within a fuction
@@ -147,24 +225,24 @@ const getState = ({ getStore, getActions, setStore }) => {
         getActions().changeColor(0, "green");
       },
 
-      getMessage: async () => {
-        const store = getStore()
-        const opts = {
-          headers: {
-            "Authorization":"Bearer "+ store.token
-          }
-        }
-        try {
-          // fetching data from the backend
-          const resp = await fetch(process.env.BACKEND_URL + "/api/hello");
-          const data = await resp.json();
-          setStore({ message: data.message });
-          // don't forget to return something, that is how the async resolves
-          return data;
-        } catch (error) {
-          console.log("Error loading message from backend", error);
-        }
-      },
+      // getMessage: async () => {
+      //   const store = getStore()
+      //   const opts = {
+      //     headers: {
+      //       "Authorization":"Bearer "+ store.token
+      //     }
+      //   }
+      //   try {
+      //     // fetching data from the backend
+      //     const resp = await fetch(process.env.BACKEND_URL + "/api/hello");
+      //     const data = await resp.json();
+      //     setStore({ message: data.message });
+      //     // don't forget to return something, that is how the async resolves
+      //     return data;
+      //   } catch (error) {
+      //     console.log("Error loading message from backend", error);
+      //   }
+      // },
       changeColor: (index, color) => {
         //get the store
         const store = getStore();

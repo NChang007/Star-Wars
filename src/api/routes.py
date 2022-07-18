@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 import os
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, Characters, Favorites
+from api.models import db, Users, Characters, Favorites
 from api.utils import generate_sitemap, APIException
 
 from flask_jwt_extended import create_access_token
@@ -45,41 +45,71 @@ def getOneCharacters(id):
 # get all favorites
 @api.route('/favorites', methods=['GET'])
 def getAllFavorites():
-  favorites = Favorites.query.all()
-  if favorites is None:
-    return jsonify(msg="This page does not exist")
-  else:
-    return jsonify(data=[favorite.serialize() for favorite in favorites]) 
+  # receive the token
+  # get user id through token
+  favorites = getUserFavorite(1)
+  favorites = [favorite.serialize() for favorite in favorites]
+  return jsonify(favorites=favorites)
 
 #add a fave
 @api.route('/addfavorites', methods=['POST'])
-def getFavorite():
+def addFavorite():
   request_body = request.get_json()
   print(request_body)
-  favorite = Favorites(fave_id = request_body["id"],
+  favorite = Favorites(fave_id = request_body["fave_id"],
                     name = request_body["name"],
-                    item_type = request_body["itemType"])
+                    item_type = request_body["item_type"],
+                    user_id = 1)
 
   db.session.add(favorite)   
   db.session.commit()
-  return jsonify(msg="good job")
+  favorites = getUserFavorite(1)
+  favorites = [favorite.serialize() for favorite in favorites]
+  return jsonify(favorites=favorites)
 
 # remove favorite
 @api.route('/deletefav/<int:id>', methods=['DELETE'])
 def removeFav(id):
   Favorites.query.filter_by(id=id).delete()
   db.session.commit()
-  return jsonify(msg="good job")
+  # return the updated list
+  favorites = getUserFavorite(1)
+  favorites = [favorite.serialize() for favorite in favorites]
+  return jsonify(favorites=favorites)
 
 
 # Create a route to authenticate your users and return JWTs. The
 # create_access_token() function is used to actually generate the JWT.
-@api.route("/token", methods=["POST"])
+@api.route("/login", methods=["POST"])
 def create_token():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
-    if email != "test" or password != "test":
-        return jsonify({"msg": "Bad username or password"}), 401
 
-    access_token = create_access_token(identity=email)
-    return jsonify(access_token=access_token)
+    # get user from db
+    # user = Users.query.filter_by(email='test')
+    # print(user)
+    # if not user:
+    #     return jsonify({"msg": "user doesn't exist"}), 401
+    # if user['password'] != password:
+    #     return jsonify({"msg": "wrong password"}), 401
+
+    if email == 'test' and password == 'test' :
+
+      #get all favorites for user
+      favorites = getUserFavorite(1)
+      favorites = [favorite.serialize() for favorite in favorites]
+      access_token = create_access_token(identity=email)
+      return jsonify(access_token=access_token, favorites=favorites)
+
+    return jsonify(msg="wrong user")
+
+def getUserFavorite(id):
+  favorites = Favorites.query.all()
+  if favorites is None:
+    return "This page does not exist"
+  else:
+    f = []
+    for fav in favorites: 
+      if fav.user_id == id:
+        f.append(fav)
+    return f
