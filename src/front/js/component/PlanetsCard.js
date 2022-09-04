@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import AboutCharacterPage from '../pages/AboutCharacterPage'
+import AboutPlanetsPage from '../pages/AboutPlanetsPage'
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
 function PlanetsCard({planet, p_id}) {

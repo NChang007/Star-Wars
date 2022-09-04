@@ -10,6 +10,7 @@ import {Login} from "./pages/login"
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import AboutCharacterPage from "./pages/AboutCharacterPage";
+import AboutPlanetsPage from "./pages/AboutPlanetsPage";
 
 //create your first component
 const Layout = () => {
@@ -30,6 +31,10 @@ const Layout = () => {
             <Route
               element={<AboutCharacterPage />}
               path="/pages/AboutCharacterPage/:key"
+            />
+            <Route
+              element={<AboutPlanetsPage />}
+              path="/pages/AboutPlanetsPage/:key"
             />
             <Route element={<h1>Not found!</h1>} />
           </Routes>

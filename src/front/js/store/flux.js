@@ -49,7 +49,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         };
         try {
           const resp = await fetch(
-            "https://3001-nchang007-starwarsblogr-nstabynatpx.ws-us54.gitpod.io/api/login",
+            "https://3001-nchang007-starwars-ldjj5e0z2ep.ws-us63.gitpod.io/api/login",
             opts
           );
           if (resp.status !== 200) {
@@ -82,7 +82,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         // }
         //fetch
         fetch(
-          "https://3001-nchang007-starwarsblogr-nstabynatpx.ws-us54.gitpod.io/api/characters"
+          "https://3001-nchang007-starwars-ldjj5e0z2ep.ws-us63.gitpod.io/api/characters"
         )
           .then((response) => response.json())
           .then((data) => {
@@ -110,7 +110,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
           };
           fetch(
-            "https://3001-nchang007-starwarsblogr-nstabynatpx.ws-us54.gitpod.io/api/favorites",
+            "https://3001-nchang007-starwars-ldjj5e0z2ep.ws-us63.gitpod.io/api/favorites",
             opts
           )
             .then((response) => response.json())
@@ -169,7 +169,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           };
           let f = store.favorites.filter((f) => f.fave_id == idx);
           fetch(
-            "https://3001-nchang007-starwarsblogr-nstabynatpx.ws-us54.gitpod.io/api/deletefav/" +
+            "https://3001-nchang007-starwars-ldjj5e0z2ep.ws-us63.gitpod.io/api/deletefav/" +
               f[0].id,
             opts
           )
@@ -189,14 +189,14 @@ const getState = ({ getStore, getActions, setStore }) => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              "fave_id": idx,
-              "item_type": type,
-              "name": name,
+              fave_id: idx,
+              item_type: type,
+              name: name,
             }),
           };
           //add the new one
           fetch(
-            "https://3001-nchang007-starwarsblogr-nstabynatpx.ws-us54.gitpod.io/api/addfavorites",
+            "https://3001-nchang007-starwars-ldjj5e0z2ep.ws-us63.gitpod.io/api/addfavorites",
             opts
           )
             .then((response) => response.json())
