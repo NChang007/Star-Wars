@@ -1,68 +1,36 @@
-import React, { useContext } from "react";
+import React, {useContext} from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
-import CharacterCard from "./CharacterCard";
-import Favorites from "./Favorites";
-import PlanetsCard from "./PlanetsCard";
+export const Navbar = () => {
+	const {store, actions} = useContext(Context);
+	console.log(store.favorites);
+	return (
+		<nav className="navbar navbar-light bg-light mb-3">
+			<Link to="/">
+				<span className="navbar-brand mb-0 h1">Starwars logo</span>
+			</Link>
+			<div className="ml-auto" style={{"display": "flex"}}>
+				{ !store.token ? 
+					<Link to='/login'> 
+						<span className="btn btn-primary">Log In</span>
+					</Link>
+					:
+					<button onClick={() => actions.logout()} className="btn btn-primary">Log Out</button>
+				}
+				<div className="dropdown">
+					<button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Favorites
+					</button>
+					<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						{store.favorites.map((fav, i) => {
 
-export const Navbar = ({ character, c_id, planets, p_id }) => {
-  const { store, actions } = useContext(Context);
-  console.log(store);
-  return (
-    <nav className="navbar navbar-light bg-light">
-      <div className="container">
-        <Link to="/">
-          <span className="navbar-brand mb-0 h1">React Boilerplate</span>
-        </Link>
+							return <a className="dropdown-item" key={i} href="#"> {fav} <i onClick={()=>actions.deleteFavorite(i)} className="fas fa-trash"></i></a>
 
-        <div className="dropdown show">
-          <a
-            className="btn btn-secondary dropdown-toggle"
-            href="#"
-            role="button"
-            id="dropdownMenuLink"
-            data-bs-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            Favorites
-          </a>
-
-          <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            
-            {store.favorites.map((fav, idx) => {
-              return (
-                <div className="col-3 dropdown-item" key={idx}>
-                  <Favorites favorite={fav} f_id={fav.fave_id} />
-                </div>
-              );
-            })}
-            
-            {/* {store.planets.map((planet, idx) => {
-              return (planet.fav &&
-                <div className="col-3 dropdown-item" key={idx}>
-                  <Favorites favorite={planet} f_id={idx} />
-                </div>
-              );
-            })} */}
-            
-          </div>
-        </div>
-        <div className="ml-auto">
-          { !store.token ?
-            <Link to="/login">
-              <button className="btn btn-primary">
-                Log In
-              </button>
-            </Link> 
-            :
-            <button onClick={() => actions.logout()} className="btn btn-primary">
-                Log Out
-              </button>
-            
-          }
-        </div>
-      </div>
-    </nav>
-  );
+						})}
+						
+					</div>
+				</div>
+			</div>
+		</nav>
+	);
 };

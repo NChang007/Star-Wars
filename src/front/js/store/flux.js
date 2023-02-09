@@ -3,18 +3,6 @@ const getState = ({ getStore, getActions, setStore }) => {
     store: {
       token: null,
       message: null,
-      demo: [
-        {
-          title: "FIRST",
-          background: "white",
-          initial: "white",
-        },
-        {
-          title: "SECOND",
-          background: "white",
-          initial: "white",
-        },
-      ],
       characters: [],
       planets: [],
       favorites: [],
@@ -72,7 +60,6 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
       // characters------------------------------------------------------------------------------
       loadChars: () => {
-        // let fav = "false";
         //get the store
         const store = getStore();
         // const opts = {
@@ -82,17 +69,12 @@ const getState = ({ getStore, getActions, setStore }) => {
         // }
         //fetch
         fetch(
-          "https://3001-nchang007-starwars-ldjj5e0z2ep.ws-us63.gitpod.io/api/characters"
+          "https://3001-nchang007-starwars-tpwf790qn3f.ws-us86.gitpod.io/api/characters"
         )
           .then((response) => response.json())
           .then((data) => {
             console.log(data);
-            for (let i = 0; i < data.data.length; i++) {
-              // data.data[i].fav = false;
-              data.data[i].type = "char";
-            }
-            // store.planets = data.results;
-            // setStore(store);
+            
             setStore({ characters: data.data });
           })
           .catch((error) => {

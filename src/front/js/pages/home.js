@@ -1,8 +1,7 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
-import CharacterCard from "../component/CharacterCard";
-import PlanetsCard from "../component/PlanetsCard";
+import Card from "../component/Card";
 
 export const Home = () => {
   //const [characters, setCharacters] = React.useState([])
@@ -22,7 +21,7 @@ export const Home = () => {
       {store.characters.map((char, idx) => {
         return (
           <div className="col-3" key={idx}>
-            <CharacterCard character={char} c_id={idx}/>
+            <Card character={char} id={idx}/>
           </div>
         );
       })}
@@ -31,7 +30,7 @@ export const Home = () => {
       {store.planets.map((planet, idx) => {
           return (
             <div className="col-3" key={idx}>
-              <PlanetsCard planet={planet} p_id={idx}/>
+              <Card planet={planet} id={idx}/>
             </div>
           );
         })}
